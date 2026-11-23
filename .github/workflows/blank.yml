@@ -1,0 +1,44 @@
+
+name: Windows Virtual Machine
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-2025
+    timeout-minutes: 30
+
+    steps:
+      - name: Windows Information
+        shell: pwsh
+        run: |
+          Get-ComputerInfo |
+            Select-Object WindowsProductName,
+                          WindowsVersion,
+                          OsArchitecture
+
+      - name: Check Desktop
+        shell: pwsh
+        run: |
+          Get-Service TermService
+          Get-Process
+
+      - name: Install Python
+        shell: pwsh
+        run: |
+          winget install Python.Python.3.12 `
+            --silent --accept-package-agreements `
+            --accept-source-agreements
+
+      - name: Check Python
+        shell: pwsh
+        run: |
+          python --version
+
+      - name: Keep Runner Active
+        shell: pwsh
+        run: |
+          Write-Host "Windows VM is running"
+          Start-Sleep -Seconds 300
+          
